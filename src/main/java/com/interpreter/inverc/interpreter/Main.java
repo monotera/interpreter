@@ -1,5 +1,5 @@
 
-package com.nexler.nx.interpreter;
+package com.interpreter.inverc.interpreter;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.ANTLRFileStream;
@@ -7,20 +7,20 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 public class Main {
 
-	private static final String EXTENSION = "nxl";
+	private static final String EXTENSION = "aif";
 
 	public static void main(String[] args) throws IOException {
 		String program = args.length > 1 ? args[1] : "test/test." + EXTENSION;
 
 		System.out.println("Interpreting file " + program);
 
-		nexlerLexer lexer = new nexlerLexer(new ANTLRFileStream(program));
+		invercLexer lexer = new invercLexer(new ANTLRFileStream(program));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		nexlerParser parser = new nexlerParser(tokens);
+		invercParser parser = new invercParser(tokens);
 
-		nexlerParser.StartContext tree = parser.start();
+		invercParser.StartContext tree = parser.start();
 
-		nexlerCustomVisitor visitor = new nexlerCustomVisitor();
+		invercCustomVisitor visitor = new invercCustomVisitor();
 		visitor.visit(tree);
 
 		System.out.println("Interpretation finished");
