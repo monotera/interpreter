@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import com.nexler.nx.interpreter.nexlerParser.CinContext;
 import com.nexler.nx.interpreter.nexlerParser.SubordinateContext;
 
 public class Main {

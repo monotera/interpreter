@@ -1,5 +1,9 @@
-subordinate miprograma}
-	const x:
-	x ! 5:
+subordinate miprograma }
+	double a:
+	int x:
+	a ! 4:
+	x ! 5.35:
+	char j:
+	j ! "WAA":
 	cin 6:
 {
