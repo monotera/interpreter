@@ -1,9 +1,13 @@
 subordinate miprograma }
 	double a:
 	int x:
-	a ! 4:
-	x ! 5.35:
+	a ! 6:
+	x ! 8:
 	char j:
-	j ! "WAA":
-	cin 6:
+	j ! "cadena":
+	string a:
+	a ! 'b':
+	cin 10:
+	// asudjhals
+
 {

@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import com.nexler.nx.interpreter.nexlerParser.SubordinateContext;
+import com.nexler.nx.interpreter.nexlerParser.MainContext;
 
 public class Main {
 
@@ -20,7 +20,7 @@ public class Main {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		nexlerParser parser = new nexlerParser(tokens);
 
-		nexlerParser.SubordinateContext tree = parser.subordinate();
+		nexlerParser.MainContext tree = parser.main();
 
 		nexlerCustomVisitor visitor = new nexlerCustomVisitor();
 		visitor.visit(tree);
