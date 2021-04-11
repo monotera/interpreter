@@ -19,9 +19,7 @@ public class Main {
 		nexlerLexer lexer = new nexlerLexer(new ANTLRFileStream(program));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		nexlerParser parser = new nexlerParser(tokens);
-
 		nexlerParser.MainContext tree = parser.main();
-
 		nexlerCustomVisitor visitor = new nexlerCustomVisitor();
 		visitor.visit(tree);
 
@@ -30,3 +28,19 @@ public class Main {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
