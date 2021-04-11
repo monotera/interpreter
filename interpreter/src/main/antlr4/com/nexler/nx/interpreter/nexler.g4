@@ -1,69 +1,95 @@
 grammar nexler;
 
 /* REGLAS DE PRODUCCIÓN */
+@parser::header{
+	import java.util.Map;
+	import java.util.HashMap;
+}
+
+@parser::members {
+	Map<String, Object> symbolTable = new HashMap<String, Object>();
+}
 
 main: PROGRAM ID BRACKET_OPEN 
     sentence*
     BRACKET_CLOSE;
     
-sentence: boolean_decl | char_decl | double_decl | int_decl | short_decl | string_decl | boolean_assign | char_assign | double_assign | int_assign | short_assign | string_assign | boolean_cin | char_cin | double_cin | int_cin | short_cin | string_cin | line_comment;
+//Sentencias
+sentence: boolean_decl | char_decl | double_decl | int_decl | short_decl | string_decl | var_assign | println | line_comment;
 
 //Declarar variables
 boolean_decl: BOOLEAN ID SEMICOLON
-		{System.out.println("\nDeclarando variable boolean... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 
 char_decl: CHAR ID SEMICOLON
-		{System.out.println("\nDeclarando variable char... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 
 double_decl: DOUBLE ID SEMICOLON
-		{System.out.println("\nDeclarando variable double... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 
 int_decl: INT ID SEMICOLON
-		{System.out.println("\nDeclarando variable int... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 
 short_decl: SHORT ID SEMICOLON
-		{System.out.println("\nDeclarando variable short... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 
 string_decl: STRING ID SEMICOLON
-		{System.out.println("\nDeclarando variable string... "+ $ID.text);};
+		{
+			System.out.println ("Declarando " + $ID.text);
+			symbolTable.put($ID.text, 0);
+		};
 		
 //Asignar variables
-boolean_assign: ID ASSIGN BOOL SEMICOLON
-		{System.out.println("Asignando valor a boolean... " + $BOOL.text);};
-
-char_assign: ID ASSIGN CHAR_DT SEMICOLON
-		{System.out.println("Asignando valor a char... " + $CHAR_DT.text);};
-
-double_assign: ID ASSIGN DOUBLE_DT SEMICOLON
-		{System.out.println("Asignando valor a double... " + $DOUBLE_DT.text);};
-
-int_assign: ID ASSIGN INT_DT SEMICOLON
-		{System.out.println("Asignando valor a int... " + $INT_DT.text);};
-
-short_assign: ID ASSIGN SHORT_DT SEMICOLON
-		{System.out.println("Asignando valor a short... " + $SHORT_DT.text);};
-
-string_assign: ID ASSIGN STRING_DT SEMICOLON
-		{System.out.println("Asignando valor a string... " + $STRING_DT.text);};
+var_assign: ID ASSIGN expression SEMICOLON
+		{
+			System.out.println ("Asignando " + $expression.value + " a la variable: " + $ID.text);
+			symbolTable.put($ID.text, $expression.value);
+		};
 		
 //Mostrar en pantalla
-boolean_cin: PRINTLN PAR_OPEN BOOL PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable boolean... " + $BOOL.text);};
 
-char_cin: PRINTLN PAR_OPEN CHAR_DT PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable char... " + $CHAR_DT.text);};
-
-double_cin: PRINTLN PAR_OPEN DOUBLE_DT PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable double... " + $DOUBLE_DT.text);};
-
-int_cin: PRINTLN PAR_OPEN INT_DT PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable int... " + $INT_DT.text);};
-
-short_cin: PRINTLN PAR_OPEN SHORT_DT PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable short... " + $SHORT_DT.text);};
-
-string_cin: PRINTLN PAR_OPEN STRING_DT PAR_CLOSE SEMICOLON
-		{System.out.println("Imprimiendo variable string... " + $STRING_DT.text);};
+println: PRINTLN PAR_OPEN expression PAR_CLOSE SEMICOLON
+		{
+			System.out.println ("Imprimiendo el contenido de la variable "+ $expression.text +" : " + $expression.value);
+		};
+		
+//Expresiones
+expression returns [Object value]: 
+			BOOL {
+				$value = Boolean.parseBoolean($BOOL.text);
+			}	| 
+			CHAR_DT {
+				$value = $CHAR_DT.text.charAt(1);
+			}	| 
+			DOUBLE_DT {
+				$value = Double.parseDouble($DOUBLE_DT.text);
+			}	| 
+			INT_DT {
+				$value = Integer.parseInt($INT_DT.text);
+			}	| 
+			SHORT_DT {
+				$value = Short.parseShort($SHORT_DT.text);
+			}	| 
+			STRING_DT {
+				$value = String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ); 
+			}	| 
+			ID { $value = symbolTable.get($ID.text); };
+		
 		
 //Comentarios
 
@@ -125,7 +151,6 @@ INT : 'int';
 SHORT: 'short';
 STRING : 'string';
 
-
 //Condicionales de la forma “si (expresión) {sentencias…} sino {sentencias...)
 WHILE: 'while';
 IF: 'if';
@@ -137,8 +162,8 @@ FOR: 'for';
 ASSIGN: '=';
 ID: [a-zA-Z_][a-zA-z0-9_]*;
 BOOL: TRUE | FALSE;
-CHAR_DT: '"'[a-zA-Z]+'"';
+CHAR_DT: '\''[a-zA-Z]'\'';
 DOUBLE_DT: [0-9]+;
 INT_DT : [0-9]+;
 SHORT_DT: [0-9];
-STRING_DT: '\''[a-zA-Z]'\'';
+STRING_DT: '"'[a-zA-Z]+'"';

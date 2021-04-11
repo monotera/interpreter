@@ -1,13 +1,13 @@
-subordinate miprograma }
-	double a:
-	int x:
-	a ! 6:
-	x ! 8:
-	char j:
-	j ! "cadena":
-	string a:
-	a ! 'b':
-	cin 10:
+main miprograma {
+	double a;
+	int x;
+	a = 6;
+	x = 8;
+	char j;
+	j = 'b';
+	string a;
+	a = "cadena";
+	cout (a);
+	cout (x);
 	// asudjhals
-
-{
+}
