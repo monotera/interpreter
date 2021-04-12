@@ -1,13 +1,11 @@
 main miprograma {
-	double a;
 	int x;
-	a = 6;
 	x = 8;
 	char j;
-	j = 'b';
-	string a;
-	a = "cadena";
-	cout (a);
 	cout (x);
+	int b;
+	b = 2+2;
+	cout(b*4);
+	cout(2+2*4);
 	// asudjhals
 }

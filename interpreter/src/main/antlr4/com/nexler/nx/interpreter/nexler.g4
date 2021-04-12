@@ -69,15 +69,25 @@ println: PRINTLN PAR_OPEN expression PAR_CLOSE SEMICOLON
 		};
 		
 //Expresiones
-expression returns [Object value]: 
-			BOOL {
+expression returns [Object value]:
+			t1 = factor {
+				$value = (int) $t1.value;
+			}
+				(PLUS t2 = factor {
+				$value = (int)$value + (int)$t2.value;
+			})*;
+factor returns [Object value]: t1 = term {
+				$value = (int) $t1.value;
+			}
+				(MULT t2 = factor {
+				$value = (int)$value + (int)$t2.value;
+			})*;
+			
+term returns [Object value]: BOOL {
 				$value = Boolean.parseBoolean($BOOL.text);
 			}	| 
 			CHAR_DT {
 				$value = $CHAR_DT.text.charAt(1);
-			}	| 
-			DOUBLE_DT {
-				$value = Double.parseDouble($DOUBLE_DT.text);
 			}	| 
 			INT_DT {
 				$value = Integer.parseInt($INT_DT.text);
@@ -88,7 +98,9 @@ expression returns [Object value]:
 			STRING_DT {
 				$value = String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ); 
 			}	| 
-			ID { $value = symbolTable.get($ID.text); };
+			ID { 
+				$value = symbolTable.get($ID.text);
+			};
 		
 		
 //Comentarios
@@ -163,7 +175,7 @@ ASSIGN: '=';
 ID: [a-zA-Z_][a-zA-z0-9_]*;
 BOOL: TRUE | FALSE;
 CHAR_DT: '\''[a-zA-Z]'\'';
-DOUBLE_DT: [0-9]+;
+
 INT_DT : [0-9]+;
 SHORT_DT: [0-9];
 STRING_DT: '"'[a-zA-Z]+'"';
