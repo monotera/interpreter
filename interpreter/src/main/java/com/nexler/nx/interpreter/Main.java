@@ -22,7 +22,6 @@ public class Main {
 		nexlerParser.MainContext tree = parser.main();
 		nexlerCustomVisitor visitor = new nexlerCustomVisitor();
 		visitor.visit(tree);
-
 		System.out.println("Interpretation finished");
 
 	}
