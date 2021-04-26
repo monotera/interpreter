@@ -1,11 +1,15 @@
 main miprograma {
 	int x;
 	x = 8;
-	char j;
+	string j;
 	cout (x);
 	int b;
-	b = 2+2;
-	cout(b*4);
-	cout(2+2*4);
+	b = 2+2*4;
+	cout(b);
 	// asudjhals
+	// double a;
+	// a = 20/3;
+	// cout (a);
+	j = "asdasd";
+	cout (j);
 }

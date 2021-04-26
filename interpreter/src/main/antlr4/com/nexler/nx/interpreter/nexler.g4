@@ -70,37 +70,35 @@ println: PRINTLN PAR_OPEN expression PAR_CLOSE SEMICOLON
 		
 //Expresiones
 expression returns [Object value]:
-			t1 = factor {
-				$value = (int) $t1.value;
-			}
-				(PLUS t2 = factor {
+			t1 = term {
+				try {
+					$value = (int) $t1.value;
+				} catch (Exception e) {
+					// En caso de que no sea un numero, no debe pasar por operaciones
+					$value = $t1.value;
+				}
+				
+			}	(PLUS t2 = term {
 				$value = (int)$value + (int)$t2.value;
-			})*;
-factor returns [Object value]: t1 = term {
-				$value = (int) $t1.value;
-			}
-				(MULT t2 = factor {
-				$value = (int)$value + (int)$t2.value;
-			})*;
+			})*
+			(MINUS t2 = term {
+				$value = (int)$value - (int)$t2.value;
+			})*
+			(MULT t2 = term {
+				$value = (int)$value * (int)$t2.value;
+			})*
+			(DIV t2 = term {
+				$value = (int)$value / (int)$t2.value;
+			})* ;
 			
-term returns [Object value]: BOOL {
-				$value = Boolean.parseBoolean($BOOL.text);
-			}	| 
-			CHAR_DT {
-				$value = $CHAR_DT.text.charAt(1);
-			}	| 
-			INT_DT {
-				$value = Integer.parseInt($INT_DT.text);
-			}	| 
-			SHORT_DT {
-				$value = Short.parseShort($SHORT_DT.text);
-			}	| 
-			STRING_DT {
-				$value = String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ); 
-			}	| 
-			ID { 
-				$value = symbolTable.get($ID.text);
-			};
+term returns [Object value]: 
+			BOOL { $value = Boolean.parseBoolean($BOOL.text); }	
+			| CHAR_DT { $value = $CHAR_DT.text.charAt(1); }	
+			| INT_DT { $value = Integer.parseInt($INT_DT.text); }	
+			| SHORT_DT { $value = Short.parseShort($SHORT_DT.text); }
+			| STRING_DT { $value = String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ); }	
+			| ID { $value = symbolTable.get($ID.text); }	
+			| PAR_OPEN expression PAR_CLOSE;
 		
 		
 //Comentarios
