@@ -12,4 +12,8 @@ main miprograma {
 	// cout (a);
 	j = "asdasd";
 	cout (j);
+	bool prueba;
+	prueba = true;
+	char carro;
+	carro = 'S';
 }
