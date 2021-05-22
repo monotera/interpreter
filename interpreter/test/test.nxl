@@ -1,19 +1,30 @@
 main miprograma {
-	int x;
-	x = 8;
-	string j;
-	cout (x);
-	int b;
-	b = 2+2*4;
-	cout(b);
-	// asudjhals
-	// double a;
-	// a = 20/3;
-	// cout (a);
-	j = "asdasd";
-	cout (j);
-	bool prueba;
-	prueba = true;
-	char carro;
-	carro = 'S';
+	//Programa de prueba de la clase Teoria de la computacion
+	
+	var x;
+	x = 5;
+	
+	var a;
+	a = "NO";
+	
+	var cent;
+	cent = true;
+	
+	cout ("Primer Condicional");
+	
+	if(cent){
+		cout ( 2+2*4 );
+	} else {
+		cout ( x );
+	}
+	
+	cout ("Segundo Condicional");
+	cent = false;
+	
+	if(cent){
+		cout ( 2+2*4 );
+	} else {
+		cout ( a );
+	}
+	
 }
