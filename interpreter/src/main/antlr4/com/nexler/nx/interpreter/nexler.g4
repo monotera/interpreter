@@ -4,108 +4,86 @@ grammar nexler;
 @parser::header{
 	import java.util.Map;
 	import java.util.HashMap;
+	import java.util.List;
+	import java.util.ArrayList;
+	import com.nexler.nx.interpreter.ast.*;
 }
 
 @parser::members {
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 }
 
-main: PROGRAM ID BRACKET_OPEN 
-    sentence*
-    BRACKET_CLOSE;
+main: PROGRAM ID BRACKET_OPEN
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+		Map<String, Object> symbolTable = new HashMap<String,Object>();
+	}
+    (sentence {body.add($sentence.node);})*
+    BRACKET_CLOSE
+    {
+    	for(ASTNode n: body){
+    		n.execute(symbolTable);
+    	}
+    };
     
 //Sentencias
-sentence: boolean_decl | char_decl | double_decl | int_decl | short_decl | string_decl | var_assign | println | line_comment;
+sentence returns [ASTNode node]: println {$node = $println.node;} 
+				| conditional {$node = $conditional.node;}
+				| var_decl {$node = $var_decl.node;}
+				| var_assign {$node = $var_assign.node;}
+				| line_comment
+				;
 
-//Declarar variables
-boolean_decl: BOOLEAN ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-
-char_decl: CHAR ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-
-double_decl: DOUBLE ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-
-int_decl: INT ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-
-short_decl: SHORT ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-
-string_decl: STRING ID SEMICOLON
-		{
-			System.out.println ("Declarando " + $ID.text);
-			symbolTable.put($ID.text, 0);
-		};
-		
-//Asignar variables
-var_assign: ID ASSIGN expression SEMICOLON
-		{
-			System.out.println ("Asignando " + $expression.value + " a la variable: " + $ID.text);
-			symbolTable.put($ID.text, $expression.value);
-		};
-		
 //Mostrar en pantalla
 
-println: PRINTLN PAR_OPEN expression PAR_CLOSE SEMICOLON
-		{
-			System.out.println ("Imprimiendo el contenido de la variable "+ $expression.text +" : " + $expression.value);
-		};
+println returns [ASTNode node]: PRINTLN PAR_OPEN expression PAR_CLOSE SEMICOLON
+		{$node = new PrintLn($expression.node)};
+		
+//Condicional
+conditional returns [ASTNode node]: IF PAR_OPEN expression PAR_CLOSE
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN (s1=sentence {body.add($s1.node);})* BRACKET_CLOSE 
+	ELSE 
+	{
+		List<ASTNode> elseBody = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN (s2=sentence {elseBody.add($s2.node);})* BRACKET_CLOSE
+	{$node = new If($expression.node, body, elseBody)};
+	
+var_decl returns [ASTNode node]:
+	VAR ID SEMICOLON {$node = new VarDecl($ID.text);}
+;
+var_assign returns [ASTNode node]:
+	ID ASSIGN expression SEMICOLON {$node = new VarAssign($ID.text, $expression.node);}
+;
 		
 //Expresiones
-expression returns [Object value]:
-			t1 = factor {
-				$value = (int) $t1.value;
-			}
-				(PLUS t2 = factor {
-				$value = (int)$value + (int)$t2.value;
-			})*;
-factor returns [Object value]: t1 = term {
-				$value = (int) $t1.value;
-			}
-				(MULT t2 = factor {
-				$value = (int)$value + (int)$t2.value;
-			})*;
+expression returns [ASTNode node]:
+			t1 = factor {$node = $t1.node}	
+				(PLUS t2 = factor {$node = new Addition($node, $t2.node);})*
+			(MINUS t2 = factor {$node = new Addition($node, $t2.node);})*;
 			
-term returns [Object value]: BOOL {
-				$value = Boolean.parseBoolean($BOOL.text);
-			}	| 
-			CHAR_DT {
-				$value = $CHAR_DT.text.charAt(1);
-			}	| 
-			INT_DT {
-				$value = Integer.parseInt($INT_DT.text);
-			}	| 
-			SHORT_DT {
-				$value = Short.parseShort($SHORT_DT.text);
-			}	| 
-			STRING_DT {
-				$value = String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ); 
-			}	| 
-			ID { 
-				$value = symbolTable.get($ID.text);
-			};
+factor returns [ASTNode node]: 
+			t1 = term {$node = $t1.node;}	
+				(MULT t2 = term {$node = new Multiplication($node, $t2.node);})*
+			(DIV t2 = term {$node = new Addition($node, $t2.node);})*;
+			
+term returns [ASTNode node]: 
+			BOOL {$node = new Constant(Boolean.parseBoolean($BOOL.text));}	
+			| CHAR_DT {$node = new Constant($CHAR_DT.text.charAt(1));}	
+			| INT_DT {$node = new Constant(Integer.parseInt($INT_DT.text));}	
+			| SHORT_DT {$node = new Constant(Short.parseShort($SHORT_DT.text));}
+			| STRING_DT {$node = new Constant(String.valueOf($STRING_DT.text).substring( 1, String.valueOf($STRING_DT.text).length() - 1 ));}
+			| ID {$node = new VarRef($ID.text);}		
+			| PAR_OPEN expression {$node = $expression.node;} PAR_CLOSE;
 		
+
 		
 //Comentarios
-
 line_comment: LINE_COMMENT ID;
+
 
 /* DEFINICION DE TOKENS DEL LENGUAJE */
 
@@ -150,18 +128,9 @@ LEQ: '<=';
 EQ: '==';
 NEQ: '!=';
 
-//Evaluación de expresiones matemáticas, lógicas y de comparación
-FALSE: 'False';
-TRUE: 'True';
-
-
+BOOL: 'true' | 'false';
 //Tipos de datos numéricos, enteros y reales y cadenas de caracteres
-BOOLEAN: 'bool';
-CHAR: 'char';
-DOUBLE : 'double';
-INT : 'int';
-SHORT: 'short';
-STRING : 'string';
+VAR: 'var';
 
 //Condicionales de la forma “si (expresión) {sentencias…} sino {sentencias...)
 WHILE: 'while';
@@ -173,9 +142,7 @@ FOR: 'for';
 //Declaración, asignación de valores y lectura de variables
 ASSIGN: '=';
 ID: [a-zA-Z_][a-zA-z0-9_]*;
-BOOL: TRUE | FALSE;
 CHAR_DT: '\''[a-zA-Z]'\'';
-
 INT_DT : [0-9]+;
 SHORT_DT: [0-9];
-STRING_DT: '"'[a-zA-Z]+'"';
+STRING_DT: '"'[a-zA-Z- ]+'"';

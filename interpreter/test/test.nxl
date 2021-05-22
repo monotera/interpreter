@@ -1,11 +1,30 @@
 main miprograma {
-	int x;
-	x = 8;
-	char j;
-	cout (x);
-	int b;
-	b = 2+2;
-	cout(b*4);
-	cout(2+2*4);
-	// asudjhals
+	//Programa de prueba de la clase Teoria de la computacion
+	
+	var x;
+	x = 5;
+	
+	var a;
+	a = "NO";
+	
+	var cent;
+	cent = true;
+	
+	cout ("Primer Condicional");
+	
+	if(cent){
+		cout ( 2+2*4 );
+	} else {
+		cout ( x );
+	}
+	
+	cout ("Segundo Condicional");
+	cent = false;
+	
+	if(cent){
+		cout ( 2+2*4 );
+	} else {
+		cout ( a );
+	}
+	
 }
