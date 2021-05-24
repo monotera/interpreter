@@ -1,30 +1,41 @@
 main miprograma {
 	//Programa de prueba de la clase Teoria de la computacion
 	
-	var x;
-	x = 5;
-	
-	var a;
-	a = "NO";
-	
-	var cent;
-	cent = true;
+	var y;
+	y = 2200;
 	
 	cout ("Primer Condicional");
 	
-	if(cent){
-		cout ( 2+2*4 );
+	if ((y % 4 == 0) && ((y % 100 != 0) || (y % 400 == 0))){
+		cout ( "El anio es bisiesto" );
+		cout( y );
 	} else {
-		cout ( x );
+		cout ( "El anio no es bisiesto" );
+		cout(y);
 	}
 	
 	cout ("Segundo Condicional");
-	cent = false;
 	
-	if(cent){
-		cout ( 2+2*4 );
+	y = 1998;
+	
+	if ((y % 4 == 0) && ((y % 100 != 0) || (y % 400 == 0))){
+		cout ( "El anio es bisiesto" );
+		cout(y);
 	} else {
-		cout ( a );
+		cout ( "El anio no es bisiesto" );
+		cout(y);
+	}
+	
+	cout ("Tercer Condicional");
+	
+	y = 1994;
+	
+	if ((y % 4 == 0) && ((y % 100 != 0) || (y % 400 == 0))){
+		cout ( "El anio es bisiesto" );
+		cout(y);
+	} else {
+		cout ( "El anio no es bisiesto" );
+		cout(y);
 	}
 	
 }

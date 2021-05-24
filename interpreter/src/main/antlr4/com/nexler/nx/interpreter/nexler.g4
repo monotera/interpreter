@@ -63,12 +63,21 @@ var_assign returns [ASTNode node]:
 expression returns [ASTNode node]:
 			t1 = factor {$node = $t1.node}	
 				(PLUS t2 = factor {$node = new Addition($node, $t2.node);})*
-			(MINUS t2 = factor {$node = new Addition($node, $t2.node);})*;
+			(MINUS t2 = factor {$node = new Minus($node, $t2.node);})*
+			(MOD t2 = factor{$node = new Mod($node, $t2.node);})*
+			(AND t2 = factor{$node = new compAnd($node, $t2.node);})*
+			(OR t2 = factor{$node = new compOr($node, $t2.node);})*
+			(EQ t2 = factor{$node = new compEQ($node, $t2.node);})*
+			(NEQ t2 = factor{$node = new compNEQ($node, $t2.node);})*
+			(GT t2 = factor{$node = new compGT($node, $t2.node);})*
+			(LT t2 = factor{$node = new compLT($node, $t2.node);})*
+			(GEQ t2 = factor{$node = new compGEQ($node, $t2.node);})*
+			(LEQ t2 = factor{$node = new compLEQ($node, $t2.node);})*;
 			
 factor returns [ASTNode node]: 
 			t1 = term {$node = $t1.node;}	
 				(MULT t2 = term {$node = new Multiplication($node, $t2.node);})*
-			(DIV t2 = term {$node = new Addition($node, $t2.node);})*;
+			(DIV t2 = term {$node = new Division($node, $t2.node);})*;
 			
 term returns [ASTNode node]: 
 			BOOL {$node = new Constant(Boolean.parseBoolean($BOOL.text));}	
@@ -113,6 +122,7 @@ PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
+MOD: '%';
 
 
 //Operadores lógicos
